@@ -14,3 +14,8 @@ type Repository interface {
 	Create(ctx context.Context, input model.JsonInput) error
 	FindByUUID(ctx context.Context, uuid string) (model.JsonInput, error)
 }
+
+type Cache interface {
+	Set(uuid string, value model.JsonInput) bool
+	Get(uuid string) (model.JsonInput, bool)
+}

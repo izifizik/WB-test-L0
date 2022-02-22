@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
+	"WB-test-L0/internal/app"
 	"github.com/gin-gonic/gin"
-	"github.com/nats-io/stan.go"
 	"log"
 	"net/http"
 )
@@ -30,19 +29,10 @@ repo->psql
 */
 
 func main() {
-	stanC, err := stan.Connect("testCluster", "testID")
+	err := app.Run()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	defer stanC.Close()
-	fmt.Println(&stanC)
-
-	router := gin.Default()
-	gin.SetMode(gin.DebugMode)
-
-	router.GET("/", Handle)
-
-	log.Fatal(router.Run("localhost:8080"))
 }
 
 func Handle(c *gin.Context) {
