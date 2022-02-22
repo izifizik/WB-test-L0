@@ -4,6 +4,13 @@
 *.dll
 *.so
 *.dylib
+.idea
+
+# CMake
+cmake-build-*/
+
+# File-based project format
+*.iws
 
 # Test binary, built with `go test -c`
 *.test
