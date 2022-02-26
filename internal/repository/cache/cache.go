@@ -2,22 +2,27 @@ package cache
 
 import (
 	"WB-test-L0/internal/domain/model"
-	"WB-test-L0/internal/service"
+	"sync"
 )
 
 type cache struct {
-	cache map[string]model.JsonInput
+	cache map[string]model.Entity
 }
 
-func NewCache() service.Cache {
-	c := make(map[string]model.JsonInput)
-	return &cache{cache: c}
+var cacheMap map[string]model.Entity
+var m sync.Mutex
+
+func NewCache() Cache {
+	cacheMap = make(map[string]model.Entity)
+	return &cache{cache: cacheMap}
 }
 
-func (c *cache) Set(uuid string, value model.JsonInput) bool {
-	return true
+func (c *cache) Set(uuid string, value model.Entity) {
+	m.Lock()
+	cacheMap[uuid] = value
+	m.Unlock()
 }
 
-func (c *cache) Get(uuid string) (model.JsonInput, bool) {
-	return model.JsonInput{}, true
+func (c *cache) Get(uuid string) model.Entity {
+	return cacheMap[uuid]
 }

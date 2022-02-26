@@ -1,8 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
-type JsonInput struct {
+type Entity struct {
 	OrderUID          string    `json:"order_uid"`
 	TrackNumber       string    `json:"track_number"`
 	Entry             string    `json:"entry"`

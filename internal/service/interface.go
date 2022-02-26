@@ -2,20 +2,13 @@ package service
 
 import (
 	"WB-test-L0/internal/domain/model"
-	"context"
 )
 
 type Service interface {
-	FindByUUID(ctx context.Context, uuid string) (model.JsonInput, error)
-	Publish(ctx context.Context, input model.JsonInput) error
-}
+	FindByUUID(uuid string) (model.Entity, error)
 
-type Repository interface {
-	Create(ctx context.Context, input model.JsonInput) error
-	FindByUUID(ctx context.Context, uuid string) (model.JsonInput, error)
-}
+	SetEntity(message []byte) error
+	GetAllEntity() error
 
-type Cache interface {
-	Set(uuid string, value model.JsonInput) bool
-	Get(uuid string) (model.JsonInput, bool)
+	SetToNats(message []byte) error
 }

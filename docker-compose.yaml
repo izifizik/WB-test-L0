@@ -1,0 +1,47 @@
+version: '3'
+services:
+  db:
+    image: postgres:latest # for dockerHub images
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: WB
+      POSTGRES_PASSWORD: WB
+      POSGRES_DB: WB
+
+  nats-streaming:
+    image: nats-streaming:latest
+    container_name: nats-streaming
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+
+  app:
+    build: . # for docker files
+    container_name: golang-app
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      PORT_APP: 8080
+      PORT_NS: 4222
+      PORT_DB: 5432
+
+      HOST_APP: localhost
+      HOST_NS: 172.17.0.1
+      HOST_DB: 172.17.0.1
+
+      NAME_DB: WB
+      USERNAME_DB: WB
+      PASSWD_DB: WB
+
+      TIME_SUB: 2022:02:23
+    depends_on:
+      - db
+      - nats-streaming
+
+#   to run this use:
+#   1. docker-compose start(as a demon)/up - to up containers in current directory (or use ctop(Unix) or lazydocker(Unix+Win))
+#   2. docker-compose stop - to stop containers in current directory (or use ctop(Unix) or lazydocker(Unix+Win))
