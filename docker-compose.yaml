@@ -1,4 +1,4 @@
-version: '3'
+version: '3.4'
 services:
   db:
     image: postgres:latest # for dockerHub images
@@ -23,7 +23,8 @@ services:
     build: . # for docker files
     container_name: golang-app
     ports:
-      - "127.0.0.1:8080:8080"
+      - "8080:8080"
+    network_mode: host
     environment:
       PORT_APP: 8080
       PORT_NS: 4222
@@ -38,10 +39,10 @@ services:
       PASSWD_DB: WB
 
       TIME_SUB: 2022:02:23
+    restart: always
     depends_on:
       - db
       - nats-streaming
-
 #   to run this use:
 #   1. docker-compose start(as a demon)/up - to up containers in current directory (or use ctop(Unix) or lazydocker(Unix+Win))
 #   2. docker-compose stop - to stop containers in current directory (or use ctop(Unix) or lazydocker(Unix+Win))

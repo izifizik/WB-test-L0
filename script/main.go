@@ -10,11 +10,11 @@ import (
 )
 
 func main() {
-	conn, err := app.StanConnect("pub", "", "")
+	conn, err := app.StanConnect("pub-er", "localhost", "4222")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	uuid := "b563feb7b2b84b6test"
+	uuid := "0"
 	entity := model.Entity{
 		OrderUID:    uuid,
 		TrackNumber: "WBILMTESTTRACK",

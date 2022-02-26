@@ -7,6 +7,7 @@ import (
 	"WB-test-L0/internal/repository/database"
 	"encoding/json"
 	"github.com/nats-io/stan.go"
+	"log"
 )
 
 type userService struct {
@@ -31,6 +32,7 @@ func (s *userService) SetEntity(message []byte) error {
 	//parse message
 	err := json.Unmarshal(message, &entity)
 	if err != nil {
+		log.Println(err.Error())
 		return errors.ServiceError
 	}
 
@@ -38,6 +40,7 @@ func (s *userService) SetEntity(message []byte) error {
 	s.cache.Set(entity.OrderUID, entity)
 	err = s.repo.CreateEntity(entity.OrderUID, message)
 	if err != nil {
+		log.Println(err.Error())
 		return err
 	}
 

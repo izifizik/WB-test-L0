@@ -4,6 +4,7 @@ import (
 	"WB-test-L0/internal/delivery/api"
 	"WB-test-L0/internal/domain/model"
 	"WB-test-L0/internal/service"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -45,7 +46,7 @@ func (h *handler) PostEntity(c *gin.Context) {
 		return
 	}
 	log.Println(entity)
-	message, err := c.GetRawData()
+	message, err := json.Marshal(entity)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),

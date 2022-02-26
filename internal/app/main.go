@@ -64,15 +64,8 @@ func Run() error {
 	}
 
 	//start subscribe
-	msg := func(m *stan.Msg) {
-		log.Println("GET FROM NATS ", string(m.Data))
-		err = s.SetEntity(m.Data)
-		if err != nil {
-			log.Println(err.Error())
-		}
-	}
 	ch := make(chan struct{})
-	go stanSub(ch, sConn, msg, cfg.NatsStreaming.Time)
+	go stanSub(ch, sConn, s, cfg.NatsStreaming.Time)
 
 	log.Println("init handlers")
 	h := user.NewHandler(s)
@@ -97,10 +90,13 @@ func StanConnect(clientID, natsURL, natsPort string) (stan.Conn, error) {
 	return stanC, nil
 }
 
-func stanSub(ch chan struct{}, conn stan.Conn, msg stan.MsgHandler, duration time.Duration) {
+func stanSub(ch chan struct{}, conn stan.Conn, s service.Service, duration time.Duration) {
 	var stanOpt stan.SubscriptionOption
 	stanOpt = stan.StartAtTimeDelta(duration)
-	sub, err := conn.QueueSubscribe("wb", "wb", msg, stanOpt, stan.DurableName("wb"))
+	sub, err := conn.QueueSubscribe("wb", "wb", func(m *stan.Msg) {
+		log.Println("GET FROM NATS ", string(m.Data))
+		s.SetEntity(m.Data)
+	}, stanOpt, stan.DurableName("wb"))
 	if err != nil {
 		log.Fatal(err.Error())
 	}
