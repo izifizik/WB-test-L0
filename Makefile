@@ -1,5 +1,5 @@
 start:
-	sudo docker-compose up
+	docker-compose up
 
 stop:
 	sudo docker-compose stop

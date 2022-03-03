@@ -9,6 +9,4 @@ type Service interface {
 
 	SetEntity(message []byte) error
 	GetAllEntity() error
-
-	SetToNats(message []byte) error
 }

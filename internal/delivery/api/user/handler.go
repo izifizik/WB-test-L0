@@ -2,9 +2,7 @@ package user
 
 import (
 	"WB-test-L0/internal/delivery/api"
-	"WB-test-L0/internal/domain/model"
 	"WB-test-L0/internal/service"
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -13,8 +11,7 @@ import (
 const (
 	ParamUUID = "uuid"
 
-	GetPath  = "/entity/:" + ParamUUID
-	PostPath = "/order"
+	GetPath = "/entity/:" + ParamUUID
 )
 
 type handler struct {
@@ -25,52 +22,22 @@ func NewHandler(service service.Service) api.Handler {
 	return &handler{userService: service}
 }
 
+//NoRoute - handler 404
 func (h *handler) NoRoute(c *gin.Context) {
 	c.Status(http.StatusNotFound)
 }
 
 func (h *handler) Register(router *gin.Engine) {
 	router.NoRoute(h.NoRoute)
-
 	router.GET(GetPath, h.GetEntity)
-	router.POST(PostPath, h.PostEntity)
 }
 
-func (h *handler) PostEntity(c *gin.Context) {
-	var entity model.Entity
-	err := c.ShouldBindJSON(&entity)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
-	log.Println(entity)
-	message, err := json.Marshal(entity)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
-
-	err = h.userService.SetToNats(message)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
-
-	c.Status(http.StatusOK)
-}
-
+//GetEntity - handler about get entity from cache
 func (h *handler) GetEntity(c *gin.Context) {
 	entity, err := h.userService.FindByUUID(c.Param(ParamUUID))
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-		})
+		log.Println(err.Error())
+		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 

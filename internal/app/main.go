@@ -3,7 +3,6 @@ package app
 import (
 	"WB-test-L0/internal/config"
 	"WB-test-L0/internal/delivery/api/user"
-	"WB-test-L0/internal/errors"
 	"WB-test-L0/internal/repository/cache"
 	"WB-test-L0/internal/repository/database"
 	"WB-test-L0/internal/service"
@@ -24,18 +23,15 @@ const (
 	colon    = ":"
 )
 
+//Run - same main but return err
 func Run() error {
 	log.Println("init config")
 	cfg := config.NewConfig()
 
-	log.Println("nats-streaming connect")
+	log.Println("nats-streaming connection")
 	sConn, err := StanConnect("sub", cfg.NatsStreaming.Host, cfg.NatsStreaming.Port)
 	if err != nil {
-		return errors.StanConnectError
-	}
-	pConn, err := StanConnect("pub", cfg.NatsStreaming.Host, cfg.NatsStreaming.Port)
-	if err != nil {
-		return errors.StanConnectError
+		return err
 	}
 
 	log.Println("init gin Engine")
@@ -56,11 +52,11 @@ func Run() error {
 	d := database.NewRepository(cfg.Database.DB)
 
 	log.Println("init service")
-	s := service.NewUserService(c, d, pConn)
+	s := service.NewUserService(c, d)
 
 	err = s.GetAllEntity()
 	if err != nil {
-		log.Println()
+		return err
 	}
 
 	//start subscribe

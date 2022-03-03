@@ -31,6 +31,7 @@ type Config struct {
 var once sync.Once
 var instance Config
 
+//NewConfig - create config from env
 func NewConfig() Config {
 	once.Do(func() {
 		err := godotenv.Load()
