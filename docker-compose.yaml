@@ -22,9 +22,9 @@ services:
   app:
     build: . # for docker files
     container_name: golang-app
+    network_mode: host
     ports:
       - "8080:8080"
-    network_mode: host
     environment:
       PORT_APP: 8080
       PORT_NS: 4222
