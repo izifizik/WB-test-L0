@@ -38,7 +38,6 @@ func (s *userService) SetEntity(message []byte) error {
 	s.cache.Set(entity.OrderUID, entity)
 	err = s.repo.CreateEntity(entity.OrderUID, message)
 	if err != nil {
-		log.Println(err.Error())
 		return err
 	}
 

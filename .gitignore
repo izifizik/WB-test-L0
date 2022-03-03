@@ -22,4 +22,3 @@ cmake-build-*/
 # vendor/
 
 /pg_data
-/wrk2

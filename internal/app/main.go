@@ -19,8 +19,9 @@ import (
 )
 
 const (
-	natsPath = "nats://"
-	colon    = ":"
+	natsPath    = "nats://"
+	colon       = ":"
+	testCluster = "test-cluster"
 )
 
 //Run - same main but return err
@@ -77,7 +78,7 @@ func Run() error {
 
 func StanConnect(clientID, natsURL, natsPort string) (stan.Conn, error) {
 	opt := stan.NatsURL(natsPath + natsURL + colon + natsPort)
-	stanC, err := stan.Connect("test-cluster", clientID, opt)
+	stanC, err := stan.Connect(testCluster, clientID, opt)
 	if err != nil {
 		return nil, err
 	}
@@ -89,6 +90,7 @@ func StanConnect(clientID, natsURL, natsPort string) (stan.Conn, error) {
 func stanSub(ch chan struct{}, conn stan.Conn, s service.Service, duration time.Duration) {
 	var stanOpt stan.SubscriptionOption
 	stanOpt = stan.StartAtTimeDelta(duration)
+
 	sub, err := conn.QueueSubscribe("wb", "wb", func(m *stan.Msg) {
 		log.Println("GET FROM NATS ", string(m.Data))
 		s.SetEntity(m.Data)

@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	conn, err := app.StanConnect("pub-er", "localhost", "4222")
+	conn, err := app.StanConnect("pub", "localhost", "4222")
 	if err != nil {
 		log.Fatal(err.Error())
 	}

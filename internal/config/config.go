@@ -24,7 +24,7 @@ type Config struct {
 	NatsStreaming struct {
 		Host string
 		Port string
-		Time time.Duration
+		Time time.Duration // yyyy:mm:dd
 	}
 }
 
